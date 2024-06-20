@@ -13,5 +13,9 @@ UCLASS()
 class CROPISPOWER_API ACropIsPowerGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	ACropIsPowerGameModeBase();
+
 	
 };
