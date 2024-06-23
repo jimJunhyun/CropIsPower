@@ -22,18 +22,25 @@ public:
 
 	FORCEINLINE TObjectPtr<class ACPPartsManager> GetPartsManager() { return PartManager; }
 	void ObtainWeapon();
+	void Trigger();
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
 
 	void DoMove(const FInputActionValue& val);
 	void DoTurn(const FInputActionValue& val);
 	void DoAttack();
+	void SetNextAttack();
+	void NextAttack();
+	void EndAttack(class UAnimMontage* Montage, bool IsPropEnded);
 
 protected:
+	FTimerHandle ComboTimerHandle;
+	uint8 bFirstAttack = true;
+	uint8 bAttackCall = false;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class USpringArmComponent> SpringArm;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -52,4 +59,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	TObjectPtr<class ACPPartsManager> PartManager;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Anim)
+	TObjectPtr<class UAnimMontage> AttackAnim;
 };

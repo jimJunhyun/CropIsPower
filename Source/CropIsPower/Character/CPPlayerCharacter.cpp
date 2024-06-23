@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Parts/CPBasePart.h"
 #include "Game/CPPlayerAnimInst.h"
+#include "Animation/AnimMontage.h"
 
 
 ACPPlayerCharacter::ACPPlayerCharacter()
@@ -48,7 +49,11 @@ ACPPlayerCharacter::ACPPlayerCharacter()
 	if (Anim.Class) {
 		GetMesh()->SetAnimInstanceClass(Anim.Class);
 	}
-	
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMon(TEXT("/Game/CropIsPower/Animations/CPAnim_Hwando_Attack_Montage.CPAnim_Hwando_Attack_Montage"));
+	if (AttackMon.Object) {
+		AttackAnim = AttackMon.Object;
+	}
 }
 
 void ACPPlayerCharacter::BeginPlay()
@@ -91,11 +96,14 @@ void ACPPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void ACPPlayerCharacter::ObtainWeapon()
 {
-	PartManager->GetWeaponHolder()->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_rSocket"));
-	FVector SockLoc = GetMesh()->GetSocketLocation(TEXT("hand_rSocket"));
-	FRotator SockRot = GetMesh()->GetSocketRotation(TEXT("hand_rSocket"));
-	PartManager->GetWeaponHolder()->SetActorLocation(SockLoc);
-	PartManager->GetWeaponHolder()->SetActorRotation(SockRot);
+	PartManager->GetWeaponHolder()->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("hand_rSocket"));
+	FTransform SockTrm = GetMesh()->GetSocketTransform(TEXT("hand_rSocket"));
+	PartManager->GetWeaponHolder()->SetActorTransform(SockTrm);
+}
+
+void ACPPlayerCharacter::Trigger()
+{
+	PartManager->TriggerHolder();
 }
 
 void ACPPlayerCharacter::DoMove(const FInputActionValue& val)
@@ -123,6 +131,52 @@ void ACPPlayerCharacter::DoTurn(const FInputActionValue& val)
 
 void ACPPlayerCharacter::DoAttack()
 {
-	PartManager->ConnectTest();
-	PartManager->TriggerHolder();
+	if (bFirstAttack) {
+
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+		PartManager->ConnectTest();
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackAnim);
+		
+		FOnMontageEnded OnEnd;
+		OnEnd.BindUObject(this, &ACPPlayerCharacter::EndAttack);
+		GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(OnEnd, AttackAnim);
+
+		SetNextAttack();
+		
+		bFirstAttack = false;
+		bAttackCall = false;
+	}
+	else {
+		if (ComboTimerHandle.IsValid()) {
+			bAttackCall = true;
+		}
+		else {
+
+			bAttackCall = false;
+		}
+	}
+}
+
+void ACPPlayerCharacter::SetNextAttack()
+{
+	GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ACPPlayerCharacter::NextAttack, 1.37f, false);
+}
+
+void ACPPlayerCharacter::NextAttack()
+{
+	ComboTimerHandle.Invalidate();
+	if (bAttackCall) {
+		FName SectionName = *FString::Printf(TEXT("Attack%d"), (bFirstAttack ? 1: 2));
+		GetMesh()->GetAnimInstance()->Montage_JumpToSection(SectionName, AttackAnim	);
+
+		bAttackCall = false;
+		
+	}
+}
+
+void ACPPlayerCharacter::EndAttack(UAnimMontage* Montage, bool IsPropEnded)
+{
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	bFirstAttack = true;
+	bAttackCall = false;
 }
