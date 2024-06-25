@@ -14,4 +14,6 @@ class CROPISPOWER_API ACPEnemyCharacter : public ACPCharacter
 {
 	GENERATED_BODY()
 	
+public:
+	ACPEnemyCharacter();
 };

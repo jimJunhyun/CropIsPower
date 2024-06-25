@@ -2,4 +2,10 @@
 
 
 #include "Character/CPEnemyCharacter.h"
+#include "CPEnemyAI.h"
 
+ACPEnemyCharacter::ACPEnemyCharacter()
+{
+	AIControllerClass = ACPEnemyAI::StaticClass();
+	AutoPossessAI = EAutoPossessAI::Spawned;
+}
