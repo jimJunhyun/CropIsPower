@@ -46,6 +46,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class UCameraComponent> PlayerCam;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	TObjectPtr<class UCPEnemySource> EnemySpawner;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inputs)
 	TObjectPtr<class UInputAction> MoveAction;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inputs)

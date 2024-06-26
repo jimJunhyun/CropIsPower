@@ -26,7 +26,7 @@ void UCPPlayerAnimInst::NativeUpdateAnimation(float DeltaSeconds)
 
 	if (Movement) {
 		MoveVel = Movement->Velocity;
-		UE_LOG(LogTemp, Log, TEXT("Vel : %f, %f"), MoveVel.X, MoveVel.Y);
+		//UE_LOG(LogTemp, Log, TEXT("Vel : %f, %f"), MoveVel.X, MoveVel.Y);
 		bIsIdle = MoveVel.Size() < MovingThreshold;
 	}
 }

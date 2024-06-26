@@ -26,4 +26,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void DecreaseHp(uint32 Amt);
+	virtual void OnDead();
+
+protected:
+	uint32 Hp;
+
 };

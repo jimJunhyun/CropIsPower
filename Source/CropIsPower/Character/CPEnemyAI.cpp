@@ -27,6 +27,7 @@ void ACPEnemyAI::RunAI()
 	if (UseBlackboard(BBoard, BBPtr)) {
 		ACPPlayerCharacter* Player = Cast<ACPPlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 		Blackboard->SetValueAsObject(TEXT("Target"), Player);
+		Blackboard->SetValueAsVector(TEXT("TargetPos"), Player->GetActorLocation());
 
 		bool RunRes = RunBehaviorTree(Tree);
 		ensure(RunRes);

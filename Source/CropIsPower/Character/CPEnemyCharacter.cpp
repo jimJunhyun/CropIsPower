@@ -8,4 +8,6 @@ ACPEnemyCharacter::ACPEnemyCharacter()
 {
 	AIControllerClass = ACPEnemyAI::StaticClass();
 	AutoPossessAI = EAutoPossessAI::Spawned;
+
+	
 }

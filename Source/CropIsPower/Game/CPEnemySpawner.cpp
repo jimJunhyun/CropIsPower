@@ -17,15 +17,13 @@ void ACPEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimer,this,  &ACPEnemySpawner::DoSpawn, 0.5f, true);
+	
 }
 
 void ACPEnemySpawner::DoSpawn()
 {
-	//25*25 범위 안에서 하나 생성하기 하하
-	FVector SpLoc;
-	FRotator SpRot;
-	GetWorld()->SpawnActor<ACPEnemyCharacter>(Enemy, SpLoc, SpRot);
+	//5*5 범위 안에서 하나 생성하기 하하
+	
 }
 
 

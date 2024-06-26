@@ -3,27 +3,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "CPEnemySpawner.generated.h"
+#include "Components/ActorComponent.h"
+#include "CPEnemySource.generated.h"
 
-UCLASS()
-class CROPISPOWER_API ACPEnemySpawner : public AActor
+
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class CROPISPOWER_API UCPEnemySource : public UActorComponent
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
-	ACPEnemySpawner();
+	UCPEnemySource();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	void DoSpawn();
 
 protected:
-	TSubclassOf< class ACPEnemyCharacter> Enemy;
+	UPROPERTY(EditAnywhere, Category = Enemy, Meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ACPEnemyCharacter> Enemy;
 
 	FTimerHandle SpawnTimer;
 	FRandomStream Randomizer;

@@ -13,6 +13,7 @@
 #include "Parts/CPBasePart.h"
 #include "Game/CPPlayerAnimInst.h"
 #include "Animation/AnimMontage.h"
+#include "Game/CPEnemySource.h"
 
 
 ACPPlayerCharacter::ACPPlayerCharacter()
@@ -25,6 +26,9 @@ ACPPlayerCharacter::ACPPlayerCharacter()
 	PlayerCam = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCam"));
 	PlayerCam->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	PlayerCam->bUsePawnControlRotation = false;
+
+	EnemySpawner = CreateDefaultSubobject<UCPEnemySource>(TEXT("Spawner"));
+	AddOwnedComponent(EnemySpawner);
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> MoveAct(TEXT("/Game/CropIsPower/Control/IAMove.IAMove"));
 	if (MoveAct.Object) {

@@ -64,3 +64,16 @@ void ACPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
+void ACPCharacter::DecreaseHp(uint32 Amt)
+{
+	Hp -= Amt;
+	if (Hp <= 0) {
+		OnDead();
+	}
+}
+
+void ACPCharacter::OnDead()
+{
+	UE_LOG(LogTemp, Log, TEXT("ав╬З╬Н..!"));
+}
+
