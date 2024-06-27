@@ -28,8 +28,9 @@ void UCPEnemySource::DoSpawn()
 {
 	FVector SpLoc = GetOwner()->GetActorLocation();
 	FVector RandLoc = FVector::OneVector;
-	RandLoc.X *= Randomizer.FRandRange(-500, 500);
-	RandLoc.Y *= Randomizer.FRandRange(-500, 500);
+	
+	RandLoc.X *= FMath::RandRange(-500.0, 500.0);
+	RandLoc.Y *= FMath::RandRange(-500.0, 500.0);
 	const FTransform SpTrm(FQuat::Identity, SpLoc + RandLoc);
 	ACPEnemyCharacter* ECh = GetWorld()->SpawnActorDeferred<ACPEnemyCharacter>(Enemy, SpTrm);
 	if (ECh) {

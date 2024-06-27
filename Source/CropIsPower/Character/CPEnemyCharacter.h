@@ -16,4 +16,24 @@ class CROPISPOWER_API ACPEnemyCharacter : public ACPCharacter
 	
 public:
 	ACPEnemyCharacter();
+
+	virtual void DoAttack() override;
+	virtual void Trigger() override;
+
+	virtual void DecreaseHp(uint32 Amt) override;
+	virtual void OnDead() override;
+
+	void DoDie(UAnimMontage* Montage, bool IsPropEnded);
+
+	void EndAnim(UAnimMontage* Montage, bool IsPropEnded);
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Anim)
+	TObjectPtr<class UAnimMontage> AttackAnim;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Anim)
+	TObjectPtr<class UAnimMontage> HitAnim;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Anim)
+	TObjectPtr<class UAnimMontage> DieAnim;
 };

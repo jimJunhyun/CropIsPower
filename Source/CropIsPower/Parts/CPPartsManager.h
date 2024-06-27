@@ -44,6 +44,7 @@ protected:
 	
 	uint8 bTriggering;
 
+
 private:
 	float InvokeDelay;
 };

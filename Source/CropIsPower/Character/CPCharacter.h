@@ -26,9 +26,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 	virtual void DecreaseHp(uint32 Amt);
 	virtual void OnDead();
 
+	virtual void DoAttack();
+	virtual void Trigger();
 protected:
 	uint32 Hp;
 

@@ -2,12 +2,12 @@
 
 
 #include "Animations/CPOnAttackNotify.h"
-#include "Character/CPPlayerCharacter.h"
+#include "Character/CPCharacter.h"
 
 void UCPOnAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
-	ACPPlayerCharacter* PC = Cast<ACPPlayerCharacter>(MeshComp->GetOwner());
+	ACPCharacter* PC = Cast<ACPCharacter>(MeshComp->GetOwner());
 	if (PC) {
 		PC->Trigger();
 	}

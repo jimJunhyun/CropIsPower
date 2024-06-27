@@ -19,6 +19,7 @@ ACPEnemyAI::ACPEnemyAI()
 	if (BTAssetRef.Object) {
 		Tree = BTAssetRef.Object;
 	}
+
 }
 
 void ACPEnemyAI::RunAI()

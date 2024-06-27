@@ -18,7 +18,7 @@ ACPCharacter::ACPCharacter()
 	bUseControllerRotationRoll = false;
 
 	GetCapsuleComponent()->InitCapsuleSize(21, 87);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("PAWN"));
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Character"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 500, 0);
@@ -64,6 +64,13 @@ void ACPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
+float ACPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	DecreaseHp(DamageAmount);
+	return DamageAmount;
+}
+
 void ACPCharacter::DecreaseHp(uint32 Amt)
 {
 	Hp -= Amt;
@@ -75,5 +82,16 @@ void ACPCharacter::DecreaseHp(uint32 Amt)
 void ACPCharacter::OnDead()
 {
 	UE_LOG(LogTemp, Log, TEXT("ав╬З╬Н..!"));
+	Destroy();
+}
+
+void ACPCharacter::DoAttack()
+{
+
+}
+
+void ACPCharacter::Trigger()
+{
+
 }
 

@@ -2,6 +2,9 @@
 
 #include "Parts/CPPartsManager.h"
 #include "CPBasePart.h"
+#include "CPBeetPart.h"
+#include "CPCabbagePart.h"
+#include "CPCottonPart.h"
 #include "Character/CPPlayerCharacter.h"
 
 // Sets default values
@@ -20,7 +23,6 @@ ACPPartsManager::ACPPartsManager()
 void ACPPartsManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
 	
 }
 
@@ -50,9 +52,32 @@ void ACPPartsManager::ConnectTest()
 		}
 	}
 	else {
-		ACPBasePart* Part = GetWorld()->SpawnActor<ACPBasePart>(FVector::ZeroVector, FRotator::ZeroRotator);
-		if (Selected->ConnectPart(TEXT("Up"), Part)) {
-			Selected = Part;
+		uint32 R = FMath::RandRange(0, 2);
+		ACPBasePart* Part = nullptr;
+		switch (R)
+		{
+		case 0: {
+			Part = GetWorld()->SpawnActor<ACPBeetPart>(FVector::ZeroVector, FRotator::ZeroRotator);
+			UE_LOG(LogTemp, Log, TEXT("ºñÆ®¿¬°áµÊ"));
+		}
+			break;
+		case 1: {
+
+			Part = GetWorld()->SpawnActor<ACPCabbagePart>(FVector::ZeroVector, FRotator::ZeroRotator);
+			UE_LOG(LogTemp, Log, TEXT("¾ç¹èÃß¿¬°áµÊ"));
+		}
+			break;
+		case 2: {
+			Part = GetWorld()->SpawnActor<ACPCottonPart>(FVector::ZeroVector, FRotator::ZeroRotator);
+			UE_LOG(LogTemp, Log, TEXT("¼Ø¿¬°áµÊ"));
+		}
+			break;
+		}
+		
+		if (Part != nullptr) {
+			if (Selected->ConnectPart(TEXT("Up"), Part)) {
+				Selected = Part;
+			}
 		}
 	}
 }

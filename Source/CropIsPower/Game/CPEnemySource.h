@@ -28,5 +28,4 @@ protected:
 	TSubclassOf<class ACPEnemyCharacter> Enemy;
 
 	FTimerHandle SpawnTimer;
-	FRandomStream Randomizer;
 };

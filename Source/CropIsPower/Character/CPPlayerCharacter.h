@@ -22,7 +22,7 @@ public:
 
 	FORCEINLINE TObjectPtr<class ACPPartsManager> GetPartsManager() { return PartManager; }
 	void ObtainWeapon();
-	void Trigger();
+	void Trigger() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -31,7 +31,7 @@ protected:
 
 	void DoMove(const FInputActionValue& val);
 	void DoTurn(const FInputActionValue& val);
-	void DoAttack();
+	virtual void DoAttack() override;
 	void SetNextAttack();
 	void NextAttack();
 	void EndAttack(class UAnimMontage* Montage, bool IsPropEnded);
