@@ -26,6 +26,8 @@ ACPBasePart::ACPBasePart()
 	MeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 
 	bRetriggerable = true;
+	Size = 18;
+	Damage = 35;
 	
 	/*SocketDatas.Add(TEXT("Up"), nullptr);
 	SocketDatas.Add(TEXT("Down"), nullptr);
@@ -49,7 +51,7 @@ void ACPBasePart::Tick(float DeltaTime)
 
 }
 
-void ACPBasePart::OnTriggered()
+bool ACPBasePart::OnTriggered()
 {
 	
 	FString Str = FString::Printf(TEXT("%s TRIGGERED!."), *(this->GetClass()->GetFName()).ToString());
@@ -59,26 +61,35 @@ void ACPBasePart::OnTriggered()
 		bTriggeredOnce = true;
 
 	TArray<FHitResult> OutHitRes;
-	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	const FVector StartPos = GetActorLocation();
-	const FVector EndPos = StartPos + GetActorForwardVector() * 150;
+	const FVector EndPos = StartPos + GetActorForwardVector() * Size;
 
-	bool IsHit = GetWorld()->SweepMultiByChannel(OutHitRes, StartPos, EndPos, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(150), Params);
+	bool IsHit = GetWorld()->SweepMultiByChannel(OutHitRes, StartPos, EndPos, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(Size), Params);
 	if (IsHit) {
 		for (auto Hits : OutHitRes)
 		{
-			UGameplayStatics::ApplyDamage(Hits.GetActor(), 50, GetWorld()->GetFirstPlayerController(), nullptr, nullptr);
+			UGameplayStatics::ApplyDamage(Hits.GetActor(), Damage, GetWorld()->GetFirstPlayerController(), nullptr, nullptr);
 
+		}
+	}
+
+	for (auto Con : SocketDatas)
+	{
+		if (Con.Value) {
+			Con.Value->AddTriggerCount();
 		}
 	}
 
 #if ENABLE_DRAW_DEBUG
 	FVector Origin = StartPos + (EndPos - StartPos) * 0.5f;
-	float HalfHeight = 150 * 0.5f;
+	float HalfHeight = Size * 0.5f;
 	FColor Color = IsHit ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), Origin, HalfHeight, 150, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), Color, false, 5);
+	DrawDebugCapsule(GetWorld(), Origin, HalfHeight, Size, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), Color, false, 5);
 #endif // ENABLE_DRAW_DEBUG
+
+	return IsHit;
 
 }
 

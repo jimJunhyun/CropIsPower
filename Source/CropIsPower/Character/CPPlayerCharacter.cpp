@@ -18,6 +18,7 @@
 
 ACPPlayerCharacter::ACPPlayerCharacter()
 {
+
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 250;
@@ -58,6 +59,8 @@ ACPPlayerCharacter::ACPPlayerCharacter()
 	if (AttackMon.Object) {
 		AttackAnim = AttackMon.Object;
 	}
+
+	Hp = 500;
 }
 
 void ACPPlayerCharacter::BeginPlay()
@@ -110,6 +113,12 @@ void ACPPlayerCharacter::Trigger()
 	PartManager->TriggerHolder();
 }
 
+void ACPPlayerCharacter::Heal(int32 Amt)
+{
+	Hp += Amt;
+	Hp = FMath::Clamp(Hp, 0, 1000);
+}
+
 void ACPPlayerCharacter::DoMove(const FInputActionValue& val)
 {
 	FVector2D MoveVec = val.Get<FVector2D>();
@@ -139,7 +148,7 @@ void ACPPlayerCharacter::DoAttack()
 
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		PartManager->ConnectTest();
-		GetMesh()->GetAnimInstance()->Montage_Play(AttackAnim);
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackAnim, 1.5f);
 		
 		FOnMontageEnded OnEnd;
 		OnEnd.BindUObject(this, &ACPPlayerCharacter::EndAttack);
@@ -163,7 +172,7 @@ void ACPPlayerCharacter::DoAttack()
 
 void ACPPlayerCharacter::SetNextAttack()
 {
-	GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ACPPlayerCharacter::NextAttack, 1.37f, false);
+	GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ACPPlayerCharacter::NextAttack, 0.91f, false);
 }
 
 void ACPPlayerCharacter::NextAttack()
@@ -171,7 +180,7 @@ void ACPPlayerCharacter::NextAttack()
 	ComboTimerHandle.Invalidate();
 	if (bAttackCall) {
 		FName SectionName = *FString::Printf(TEXT("Attack%d"), (bFirstAttack ? 1: 2));
-		GetMesh()->GetAnimInstance()->Montage_JumpToSection(SectionName, AttackAnim	);
+		GetMesh()->GetAnimInstance()->Montage_JumpToSection(SectionName, AttackAnim);
 
 		bAttackCall = false;
 		

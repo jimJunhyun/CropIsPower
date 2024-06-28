@@ -24,6 +24,8 @@ public:
 	void ObtainWeapon();
 	void Trigger() override;
 
+	void Heal(int32 Amt);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

@@ -17,5 +17,5 @@ class CROPISPOWER_API ACPCottonPart : public ACPBasePart
 public:
 	ACPCottonPart();
 
-	virtual void OnTriggered() override;
+	virtual bool OnTriggered() override;
 };

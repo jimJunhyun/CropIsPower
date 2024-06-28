@@ -17,5 +17,5 @@ class CROPISPOWER_API ACPBeetPart : public ACPBasePart
 public:
 	ACPBeetPart();
 
-	virtual void OnTriggered() override;
+	virtual bool OnTriggered() override;
 };

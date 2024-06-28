@@ -5,6 +5,9 @@
 #include "CPEnemyAI.h"
 #include "Game/CPPlayerAnimInst.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Character/CPPlayerCharacter.h"
+#include "Components/CapsuleComponent.h"
 
 ACPEnemyCharacter::ACPEnemyCharacter()
 {
@@ -30,6 +33,8 @@ ACPEnemyCharacter::ACPEnemyCharacter()
 	if (DieMon.Object) {
 		DieAnim = DieMon.Object;
 	}
+
+	Hp = 150;
 }
 
 void ACPEnemyCharacter::DoAttack()
@@ -44,28 +49,72 @@ void ACPEnemyCharacter::DoAttack()
 
 void ACPEnemyCharacter::Trigger()
 {
-	//¾Æ¸ô¶ûÆÇÁ¤¸¸µé¾î!!!!!!!!!!!!!!!!!!!!
+	TArray<FHitResult> OutHitRes;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);
+
+	const FVector StartPos = GetActorLocation();
+	const FVector EndPos = StartPos + GetActorForwardVector() * 25;
+
+	bool IsHit = GetWorld()->SweepMultiByChannel(OutHitRes, StartPos, EndPos, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(25), Params);
+	bool PHit = false;
+	if (IsHit) {
+		for (auto Hits : OutHitRes)
+		{
+			ACPPlayerCharacter* PC = Cast<ACPPlayerCharacter>(Hits.GetActor());
+			if (PC) {
+				UGameplayStatics::ApplyDamage(PC, 10, GetController(), nullptr, nullptr);
+				PHit = true;
+			}
+
+		}
+	}
+
+#if ENABLE_DRAW_DEBUG
+	FVector Origin = StartPos + (EndPos - StartPos) * 0.5f;
+	float HalfHeight = 25 * 0.5f;
+	FColor Color = PHit ? FColor::Green : FColor::Red;
+	DrawDebugCapsule(GetWorld(), Origin, HalfHeight, 25, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), Color, false, 5);
+#endif // ENABLE_DRAW_DEBUG
 }
 
-void ACPEnemyCharacter::DecreaseHp(uint32 Amt)
+void ACPEnemyCharacter::DecreaseHp(int32 Amt)
 {
+	if (Hp > 0) {
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+		UAnimInstance* AnimIns = GetMesh()->GetAnimInstance();
+		if (AnimIns) {
+			AnimIns->Montage_Play(HitAnim, 1);
+		}
+		
+		FOnMontageEnded OnEnd;
+		OnEnd.BindUObject(this, &ACPEnemyCharacter::EndAnim);
+		GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(OnEnd, HitAnim);
+	}
 	Super::DecreaseHp(Amt);
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	PlayAnimMontage(HitAnim);
-
-	FOnMontageEnded OnEnd;
-	OnEnd.BindUObject(this, &ACPEnemyCharacter::EndAnim);
-	GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(OnEnd, HitAnim);
 }
 
 void ACPEnemyCharacter::OnDead()
 {
+	
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	PlayAnimMontage(DieAnim);
+	UAnimInstance* AnimIns = GetMesh()->GetAnimInstance();
+	if (AnimIns) {
+		AnimIns->StopAllMontages(0);
+		AnimIns->Montage_Play(DieAnim, 2);
+	}
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 
-	FOnMontageEnded OnEnd;
+	ACPEnemyAI* AICon = Cast<ACPEnemyAI>(GetController());
+	if (AICon) {
+		AICon->StopAI();
+	}
+
+	/*FOnMontageEnded OnEnd;
 	OnEnd.BindUObject(this, &ACPEnemyCharacter::DoDie);
-	GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(OnEnd, DieAnim);
+	GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(OnEnd, DieAnim);*/
+
+	FTimerHandle Dier;
+	GetWorld()->GetTimerManager().SetTimer(Dier, FTimerDelegate::CreateLambda([&]() {Super::OnDead(); }), 5.0f, false);
 }
 
 void ACPEnemyCharacter::DoDie(UAnimMontage* Montage, bool IsPropEnded)

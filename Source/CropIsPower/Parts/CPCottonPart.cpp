@@ -3,6 +3,8 @@
 
 #include "Parts/CPCottonPart.h"
 #include "CPCottonPart.h"
+#include "Kismet/GameplayStatics.h"
+#include "Character/CPPlayerCharacter.h"
 
 ACPCottonPart::ACPCottonPart()
 {
@@ -12,10 +14,17 @@ ACPCottonPart::ACPCottonPart()
 	}
 
 	bRetriggerable = true;
-	
+	Size = 7;
 }
 
-void ACPCottonPart::OnTriggered()
+bool ACPCottonPart::OnTriggered()
 {
-	Super::OnTriggered();
+	bool Hit = Super::OnTriggered();
+	if (Hit) {
+		ACPPlayerCharacter* PC = Cast<ACPPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		if (PC) {
+			PC->Heal(3);
+		}
+	}
+	return Hit;
 }

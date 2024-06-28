@@ -20,7 +20,7 @@ public:
 	virtual void DoAttack() override;
 	virtual void Trigger() override;
 
-	virtual void DecreaseHp(uint32 Amt) override;
+	virtual void DecreaseHp(int32 Amt) override;
 	virtual void OnDead() override;
 
 	void DoDie(UAnimMontage* Montage, bool IsPropEnded);

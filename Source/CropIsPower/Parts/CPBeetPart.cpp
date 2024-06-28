@@ -12,11 +12,13 @@ ACPBeetPart::ACPBeetPart()
 	}
 
 	bRetriggerable = true;
+
+	Size = 25;
 }
 
-void ACPBeetPart::OnTriggered()
+bool ACPBeetPart::OnTriggered()
 {
-	Super::OnTriggered();
+	return Super::OnTriggered();
 
 
 }

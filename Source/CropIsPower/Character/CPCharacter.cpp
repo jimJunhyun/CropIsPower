@@ -71,9 +71,24 @@ float ACPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	return DamageAmount;
 }
 
-void ACPCharacter::DecreaseHp(uint32 Amt)
+void ACPCharacter::DecreaseHp(int32 Amt)
 {
+	int32 prevHp = Hp;
 	Hp -= Amt;
+	Hp = FMath::Clamp(Hp, 0, 1000);
+	UE_LOG(LogTemp, Log, TEXT("Damaged, HP LEFT : %d"), Hp);
+	UE_LOG(LogTemp, Log, TEXT("Damaged, PREVHP : %d, CURHP : %d"),prevHp, Hp);
+	if (Hp == prevHp) {
+		UE_LOG(LogTemp, Log, TEXT("DUIGINDEUT"));
+		
+	}
+	if (Hp > (int32)0) {
+		UE_LOG(LogTemp, Log, TEXT("SARAISSSS"));
+	}
+	else {
+
+		UE_LOG(LogTemp, Log, TEXT("DUIGIM"));
+	}
 	if (Hp <= 0) {
 		OnDead();
 	}
@@ -81,7 +96,7 @@ void ACPCharacter::DecreaseHp(uint32 Amt)
 
 void ACPCharacter::OnDead()
 {
-	UE_LOG(LogTemp, Log, TEXT("ав╬З╬Н..!"));
+	UE_LOG(LogTemp, Log, TEXT("DEAD"));
 	Destroy();
 }
 

@@ -22,6 +22,6 @@ class CROPISPOWER_API IEquipablePart
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void OnTriggered() = 0;
+	virtual bool OnTriggered() = 0;
 	virtual void AddTriggerCount() = 0;
 };

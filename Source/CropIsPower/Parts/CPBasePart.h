@@ -45,16 +45,22 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void OnTriggered() override;
+	virtual bool OnTriggered() override;
 	virtual void AddTriggerCount() override;
 	virtual uint8 ConnectPart(FString SocketName, ACPBasePart* Con);
 
-	FORCEINLINE int GetTriggerCount() { return TriggerCount; }
+	FORCEINLINE uint8 GetTriggerCount() { return TriggerCount; }
 	FORCEINLINE bool IsTriggerable() { return !bTriggeredOnce || bRetriggerable; }
 	FORCEINLINE uint8 GetRetriggerable() { return bRetriggerable; }
 	FORCEINLINE void SetRetriggerable(uint8 value) { bRetriggerable = value; }
 protected:
-	int TriggerCount;
+	uint8 TriggerCount;
 	uint8 bRetriggerable; //일회용이 아닌가??
 	uint8 bTriggeredOnce;
+
+	UPROPERTY(VisibleAnywhere, Category = Part)
+	float Size;
+
+	UPROPERTY(VisibleAnywhere, Category = Part)
+	uint32 Damage;
 };

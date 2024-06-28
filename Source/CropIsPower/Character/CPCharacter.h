@@ -28,12 +28,12 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
-	virtual void DecreaseHp(uint32 Amt);
+	virtual void DecreaseHp(int32 Amt);
 	virtual void OnDead();
 
 	virtual void DoAttack();
 	virtual void Trigger();
 protected:
-	uint32 Hp;
+	int32 Hp;
 
 };

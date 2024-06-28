@@ -12,32 +12,11 @@ ACPCabbagePart::ACPCabbagePart()
 	}
 
 	bRetriggerable = true;
+	Size = 75;
+	Damage = 70;
 }
 
-void ACPCabbagePart::OnTriggered()
+bool ACPCabbagePart::OnTriggered()
 {
-	Super::OnTriggered();
-
-	TArray<FHitResult> OutHitRes;
-	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);
-
-	const FVector StartPos = GetActorLocation();
-	const FVector EndPos = StartPos + GetActorForwardVector() * 150;
-	
-	bool IsHit = GetWorld()->SweepMultiByChannel(OutHitRes, StartPos, EndPos, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(150), Params);
-	if (IsHit) {
-		for (auto Hits : OutHitRes)
-		{
-			UGameplayStatics::ApplyDamage(Hits.GetActor(), 50, GetWorld()->GetFirstPlayerController(), nullptr, nullptr);
-
-		}
-	}
-
-#if ENABLE_DRAW_DEBUG
-	FVector Origin = StartPos + (EndPos - StartPos) * 0.5f;
-	float HalfHeight = 150 * 0.5f;
-	FColor Color = IsHit ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), Origin, HalfHeight, 150, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), Color, false, 5);
-#endif // ENABLE_DRAW_DEBUG
-
+	return Super::OnTriggered();
 }
